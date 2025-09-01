@@ -13,7 +13,7 @@ function publishRegistration(data) {
 
         // Prefer sendBeacon for reliability (fires on navigation)
         if (navigator.sendBeacon) {
-            const blob = new Blob([payload], { type: 'text/plain' });
+            const blob = new Blob([payload], { type: 'application/json;charset=UTF-8' });
             navigator.sendBeacon(WEBHOOK_URL, blob);
         }
 
@@ -21,7 +21,7 @@ function publishRegistration(data) {
         fetch(WEBHOOK_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain' },
+            headers: { 'Content-Type': 'application/json;charset=UTF-8' },
             body: payload,
             keepalive: true,
         }).catch(() => { /* ignore */ });
@@ -34,6 +34,16 @@ function publishRegistration(data) {
             timestamp: new Date().toISOString(),
             ...data,
         });
+
+        // Last-resort GET ping (may show in logs even if POSTs filtered)
+        try {
+            const img = new Image();
+            const qs = new URLSearchParams({
+                event: 'webinar_registration_ping',
+                t: Date.now().toString(),
+            }).toString();
+            img.src = WEBHOOK_URL + '?' + qs;
+        } catch (_) {}
     } catch (e) {
         console.warn('Webhook publish error', e);
     }
@@ -188,9 +198,24 @@ document.addEventListener('DOMContentLoaded', function() {
             // Redirect to thank you page (webhook fire-and-forget)
             setTimeout(() => {
                 window.location.href = 'thank-you.html';
-            }, 1000);
+            }, 1500);
         });
     }
+
+    // Debug helper: trigger a webhook ping with dummy data
+    try {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('debug_webhook') === '1') {
+            publishRegistration({
+                firstName: 'Test',
+                lastName: 'User',
+                email: 'test@example.com',
+                specialty: 'debug',
+                stage: 'debug',
+            });
+            console.log('Debug webhook fired');
+        }
+    } catch (_) {}
     
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
