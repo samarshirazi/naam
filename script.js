@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
             const specialty = document.getElementById('specialty').value;
+            const phone = (document.getElementById('phone')?.value || '').trim();
             const stage = document.getElementById('stage').value;
             const agreement = document.getElementById('agreement').checked;
             
@@ -147,6 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 firstName,
                 lastName,
                 email,
+                phone,
                 specialty,
                 stage,
                 timestamp: new Date().toISOString()
