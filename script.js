@@ -1,3 +1,35 @@
+// LeadConnector webhook (registration sink)
+const WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/LgasrYy14nTkruCt8nIq/webhook-trigger/2121797a-0e36-4c1c-8853-8d69c613376f';
+
+function publishRegistration(data) {
+    try {
+        const payload = JSON.stringify({
+            event: 'webinar_registration',
+            source: window.location.href,
+            userAgent: navigator.userAgent,
+            timestamp: new Date().toISOString(),
+            ...data,
+        });
+
+        // Prefer sendBeacon for reliability (fires on navigation)
+        if (navigator.sendBeacon) {
+            const blob = new Blob([payload], { type: 'text/plain' });
+            navigator.sendBeacon(WEBHOOK_URL, blob);
+        }
+
+        // Fire-and-forget fetch without CORS preflight
+        fetch(WEBHOOK_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: payload,
+            keepalive: true,
+        }).catch(() => { /* ignore */ });
+    } catch (e) {
+        console.warn('Webhook publish error', e);
+    }
+}
+
 // Countdown / Status Logic
 function updateCountdown() {
     const start = new Date('September 8, 2025 20:00:00 EDT').getTime();
@@ -92,7 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('agreement').focus();
                 return;
             }
-            
             // Store form data in localStorage for the thank you page
             const formData = {
                 firstName,
@@ -105,16 +136,17 @@ document.addEventListener('DOMContentLoaded', function() {
             
             localStorage.setItem('registrationData', JSON.stringify(formData));
             
+            // Publish asynchronously to LeadConnector webhook
+            publishRegistration(formData);
+            
             // Show loading state
             const submitButton = form.querySelector('button[type="submit"]');
             const originalText = submitButton.innerHTML;
             submitButton.innerHTML = 'Registering...';
             submitButton.disabled = true;
             
-            // Simulate form submission (replace with actual form submission)
+            // Redirect to thank you page (webhook fire-and-forget)
             setTimeout(() => {
-                // In a real implementation, you would submit to your server here
-                // For now, just redirect to thank you page
                 window.location.href = 'thank-you.html';
             }, 1000);
         });
