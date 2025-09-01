@@ -25,9 +25,49 @@ function publishRegistration(data) {
             body: payload,
             keepalive: true,
         }).catch(() => { /* ignore */ });
+
+        // Hard fallback: post via hidden form to bypass CORS entirely
+        postViaHiddenForm(WEBHOOK_URL, {
+            event: 'webinar_registration',
+            source: window.location.href,
+            userAgent: navigator.userAgent,
+            timestamp: new Date().toISOString(),
+            ...data,
+        });
     } catch (e) {
         console.warn('Webhook publish error', e);
     }
+}
+
+function ensureHiddenIframe(name) {
+    let iframe = document.querySelector(`iframe[name="${name}"]`);
+    if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.name = name;
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+    }
+    return iframe;
+}
+
+function postViaHiddenForm(url, data) {
+    ensureHiddenIframe('webhook_sink');
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = url;
+    form.target = 'webhook_sink';
+    form.style.display = 'none';
+
+    Object.entries(data).forEach(([key, value]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = typeof value === 'string' ? value : JSON.stringify(value);
+        form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    try { form.submit(); } finally { form.remove(); }
 }
 
 // Countdown / Status Logic
