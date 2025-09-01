@@ -94,6 +94,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Form validation and handling
     const form = document.getElementById('registrationForm');
+    // Enforce digits-only as the user types in phone
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            const digits = this.value.replace(/\D/g, '');
+            if (digits !== this.value) this.value = digits;
+        });
+    }
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -103,7 +111,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
             const specialty = document.getElementById('specialty').value;
-            const phone = (document.getElementById('phone')?.value || '').trim();
+            const phoneRaw = (document.getElementById('phone')?.value || '').trim();
+            const phoneDigits = phoneRaw.replace(/\D/g, '');
             const stage = document.getElementById('stage').value;
             const agreement = document.getElementById('agreement').checked;
             
@@ -126,8 +135,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            if (!phone) {
-                alert('Please enter your phone number.');
+            if (!phoneDigits) {
+                alert('Please enter your phone number (digits only).');
+                document.getElementById('phone').focus();
+                return;
+            }
+            if (phoneDigits.length !== phoneRaw.length) {
+                alert('Phone must contain digits only (0-9).');
                 document.getElementById('phone').focus();
                 return;
             }
@@ -154,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 firstName,
                 lastName,
                 email,
-                phone,
+                phone: phoneDigits,
                 specialty,
                 stage,
                 timestamp: new Date().toISOString()
