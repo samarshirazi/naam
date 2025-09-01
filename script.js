@@ -2,6 +2,7 @@
 const WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/LgasrYy14nTkruCt8nIq/webhook-trigger/2121797a-0e36-4c1c-8853-8d69c613376f';
 
 function publishRegistration(data) {
+    // Force a single application/x-www-form-urlencoded POST via hidden form
     try {
         const payloadObj = {
             event: 'webinar_registration',
@@ -10,20 +11,7 @@ function publishRegistration(data) {
             timestamp: new Date().toISOString(),
             ...data,
         };
-        let sent = false;
-
-        // Prefer sendBeacon for reliability (fires on navigation)
-        if (navigator.sendBeacon) {
-            try {
-                const blob = new Blob([JSON.stringify(payloadObj)], { type: 'application/json;charset=UTF-8' });
-                sent = navigator.sendBeacon(WEBHOOK_URL, blob);
-            } catch (_) { sent = false; }
-        }
-
-        // Fallback: post via hidden form to bypass CORS entirely
-        if (!sent) {
-            postViaHiddenForm(WEBHOOK_URL, payloadObj);
-        }
+        postViaHiddenForm(WEBHOOK_URL, payloadObj);
     } catch (e) {
         console.warn('Webhook publish error', e);
     }
