@@ -58,7 +58,7 @@ body {
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, rgba(49,130,206,0.65) 0%, rgba(44,82,130,0.65) 100%), url('webinar-hero-section.jpg');
+    background: linear-gradient(135deg, rgba(26,38,93,0.82) 0%, rgba(15,25,55,0.82) 100%), url('webinar-hero-section.jpg');
     background-size: cover;
     background-position: center;
     color: white;
