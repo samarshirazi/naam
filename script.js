@@ -3,47 +3,27 @@ const WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/LgasrYy14nTkruCt
 
 function publishRegistration(data) {
     try {
-        const payload = JSON.stringify({
+        const payloadObj = {
             event: 'webinar_registration',
             source: window.location.href,
             userAgent: navigator.userAgent,
             timestamp: new Date().toISOString(),
             ...data,
-        });
+        };
+        let sent = false;
 
         // Prefer sendBeacon for reliability (fires on navigation)
         if (navigator.sendBeacon) {
-            const blob = new Blob([payload], { type: 'application/json;charset=UTF-8' });
-            navigator.sendBeacon(WEBHOOK_URL, blob);
+            try {
+                const blob = new Blob([JSON.stringify(payloadObj)], { type: 'application/json;charset=UTF-8' });
+                sent = navigator.sendBeacon(WEBHOOK_URL, blob);
+            } catch (_) { sent = false; }
         }
 
-        // Fire-and-forget fetch without CORS preflight
-        fetch(WEBHOOK_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-            body: payload,
-            keepalive: true,
-        }).catch(() => { /* ignore */ });
-
-        // Hard fallback: post via hidden form to bypass CORS entirely
-        postViaHiddenForm(WEBHOOK_URL, {
-            event: 'webinar_registration',
-            source: window.location.href,
-            userAgent: navigator.userAgent,
-            timestamp: new Date().toISOString(),
-            ...data,
-        });
-
-        // Last-resort GET ping (may show in logs even if POSTs filtered)
-        try {
-            const img = new Image();
-            const qs = new URLSearchParams({
-                event: 'webinar_registration_ping',
-                t: Date.now().toString(),
-            }).toString();
-            img.src = WEBHOOK_URL + '?' + qs;
-        } catch (_) {}
+        // Fallback: post via hidden form to bypass CORS entirely
+        if (!sent) {
+            postViaHiddenForm(WEBHOOK_URL, payloadObj);
+        }
     } catch (e) {
         console.warn('Webhook publish error', e);
     }
@@ -202,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Debug helper: trigger a webhook ping with dummy data
+    // Debug helper: trigger a webhook POST with dummy data
     try {
         const params = new URLSearchParams(window.location.search);
         if (params.get('debug_webhook') === '1') {
@@ -213,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 specialty: 'debug',
                 stage: 'debug',
             });
-            console.log('Debug webhook fired');
+            console.log('Debug webhook POST fired');
         }
     } catch (_) {}
     
