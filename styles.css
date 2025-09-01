@@ -101,6 +101,11 @@ body {
     backdrop-filter: blur(10px);
 }
 
+/* Mobile CTA buttons (hidden on desktop) */
+.mobile-hero-cta, .mobile-section-cta {
+    display: none;
+}
+
 /* Content Section */
 .content-section {
     padding: 80px 0;
@@ -536,6 +541,22 @@ body {
         background-size: cover;
         background-position: center;
         padding: 100px 0;
+    }
+
+    .mobile-hero-cta, .mobile-section-cta {
+        display: inline-block;
+        margin-top: 18px;
+        background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+        color: #fff;
+        padding: 14px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 700;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    }
+
+    #about-presentor .mobile-section-cta {
+        margin-top: 12px;
     }
 
     .content-section .container {
