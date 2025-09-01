@@ -126,6 +126,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            if (!phone) {
+                alert('Please enter your phone number.');
+                document.getElementById('phone').focus();
+                return;
+            }
+            
             if (!specialty) {
                 alert('Please select your specialty.');
                 document.getElementById('specialty').focus();
