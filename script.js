@@ -1,32 +1,37 @@
-// Countdown Timer
+// Countdown / Status Logic
 function updateCountdown() {
-    const eventDate = new Date('August 25, 2025 20:00:00 EDT').getTime();
-    const now = new Date().getTime();
-    const timeLeft = eventDate - now;
+    const start = new Date('September 8, 2025 20:00:00 EDT').getTime();
+    const end = new Date('September 8, 2025 21:00:00 EDT').getTime();
+    const now = Date.now();
+    const countdownElement = document.getElementById('countdown');
 
-    if (timeLeft > 0) {
+    if (!countdownElement) return;
+
+    if (now < start) {
+        const timeLeft = start - now;
         const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
         const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-        const countdownElement = document.getElementById('countdown');
-        if (countdownElement) {
-            if (days > 0) {
-                countdownElement.innerHTML = `⏰ ${days}d ${hours}h ${minutes}m ${seconds}s until live event`;
-            } else if (hours > 0) {
-                countdownElement.innerHTML = `⏰ ${hours}h ${minutes}m ${seconds}s until live event`;
-            } else {
-                countdownElement.innerHTML = `⏰ ${minutes}m ${seconds}s until live event`;
-            }
+        if (days > 0) {
+            countdownElement.textContent = `⏰ ${days}d ${hours}h ${minutes}m ${seconds}s until live event`;
+        } else if (hours > 0) {
+            countdownElement.textContent = `⏰ ${hours}h ${minutes}m ${seconds}s until live event`;
+        } else {
+            countdownElement.textContent = `⏰ ${minutes}m ${seconds}s until live event`;
         }
+        countdownElement.style.background = '';
+        countdownElement.style.animation = '';
+    } else if (now >= start && now < end) {
+        countdownElement.textContent = '🔴 Live Now';
+        countdownElement.style.background = 'rgba(220, 53, 69, 0.9)';
+        countdownElement.style.animation = 'pulse 2s infinite';
     } else {
-        const countdownElement = document.getElementById('countdown');
-        if (countdownElement) {
-            countdownElement.innerHTML = '🔴 Event is Live Now!';
-            countdownElement.style.background = 'rgba(220, 53, 69, 0.9)';
-            countdownElement.style.animation = 'pulse 2s infinite';
-        }
+        // Event ended: clear status
+        countdownElement.textContent = '';
+        countdownElement.style.background = '';
+        countdownElement.style.animation = '';
     }
 }
 
