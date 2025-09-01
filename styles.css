@@ -58,7 +58,9 @@ body {
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+    background: linear-gradient(135deg, rgba(49,130,206,0.65) 0%, rgba(44,82,130,0.65) 100%), url('webinar-hero-section.jpg');
+    background-size: cover;
+    background-position: center;
     color: white;
     padding: 60px 0;
     text-align: center;
@@ -168,6 +170,17 @@ body {
     font-size: 1.1rem;
     color: #666;
     line-height: 1.8;
+}
+
+/* Speaker image */
+.speaker-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 20px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
 }
 
 /* Agenda Section */
