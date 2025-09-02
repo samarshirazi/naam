@@ -92,6 +92,20 @@ setInterval(updateCountdown, 1000);
 document.addEventListener('DOMContentLoaded', function() {
     updateCountdown();
     
+    // Header shrink on scroll (to ~75% size)
+    const header = document.querySelector('.header');
+    if (header) {
+        const applyShrink = () => {
+            if (window.scrollY > 10) {
+                header.classList.add('shrink');
+            } else {
+                header.classList.remove('shrink');
+            }
+        };
+        applyShrink();
+        window.addEventListener('scroll', applyShrink, { passive: true });
+    }
+    
     // Form validation and handling
     const form = document.getElementById('registrationForm');
     // Enforce digits-only as the user types in phone

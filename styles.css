@@ -26,6 +26,7 @@ body {
     top: 0;
     z-index: 100;
     box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    transition: padding 0.2s ease, box-shadow 0.2s ease;
 }
 
 .header .container {
@@ -46,6 +47,16 @@ body {
     height: 72px;
     width: auto;
     max-width: 260px;
+    transition: height 0.2s ease;
+}
+
+/* Shrink header on scroll */
+.header.shrink {
+    padding: 15px 0; /* ~75% of original vertical padding */
+}
+
+.header.shrink .logo-image {
+    height: 54px; /* 75% of 72px */
 }
 
 .badge {
@@ -531,6 +542,7 @@ body {
     .header {
         padding: 14px 0;
     }
+    .header.shrink { padding: 10px 0; } /* ~75% of 14px */
 
     .badge {
         font-size: 0.8rem;
