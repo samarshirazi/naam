@@ -103,6 +103,21 @@ body {
     margin-bottom: 20px;
 }
 
+/* Desktop: add middle dot before time */
+@media (min-width: 769px) {
+    .date-time .nowrap::before {
+        content: ' • ';
+    }
+}
+
+/* Mobile: move time to next line, no dot */
+@media (max-width: 768px) {
+    .date-time .nowrap {
+        display: block;
+        margin-top: 6px;
+    }
+}
+
 .countdown-timer {
     font-size: 1.1rem;
     background: rgba(255,255,255,0.2);
