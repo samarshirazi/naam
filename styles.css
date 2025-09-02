@@ -101,6 +101,9 @@ body {
     backdrop-filter: blur(10px);
 }
 
+/* Utility */
+.nowrap { white-space: nowrap; }
+
 /* Mobile CTA buttons (hidden on desktop) */
 .mobile-hero-cta, .mobile-section-cta {
     display: none;
