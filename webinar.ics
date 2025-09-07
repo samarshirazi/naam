@@ -1,0 +1,13 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//AMON//Webinar//EN
+BEGIN:VEVENT
+UID:amon-webinar-20250908@naamtraining.com
+DTSTAMP:20250908T000000Z
+DTSTART:20250909T000000Z
+DTEND:20250909T010000Z
+SUMMARY:Aesthetic Medicine Secrets Webinar
+DESCRIPTION:The Art, Heart, and Business of Aesthetic Medicine with Dr. Amir Rouzati\n\nJoin Zoom Meeting:\nhttps://us06web.zoom.us/j/81430008766?pwd=cRadg36opMOa9NXEIQ54GRBGg7hK6z.1
+LOCATION:Online Webinar
+END:VEVENT
+END:VCALENDAR
